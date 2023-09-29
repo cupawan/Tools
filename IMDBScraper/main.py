@@ -4,6 +4,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+from collections import defaultdict
 
 import time
 from datetime import datetime
@@ -93,28 +94,32 @@ def saveData(filename, data_dict):
 
 
 def scrapeData():
-	query = input("Enter your Query: ")
-	print(f"Searching for {query} ...")	
-	wd = configureSelenium(headless=True)
-	homepage = loadHomepage(wd, url = "https://imdb.com")
-	print("Opened IMDb")
-	searchTitle(query = query, wd = wd)
-	results = searchResults('//a[@class="ipc-metadata-list-summary-item__t"]',wd)
-	results.click()
-	print(f"Results Fetched!")
-	time.sleep(1.5)
-	print("Gathering Data...")
-	plot = findPlotElement(wd = wd, xpath = '//span[@data-testid="plot-xl"]')
-	title = findTitle(wd, '//span[@class="sc-afe43def-1 fDTGTb"]')
-	rating = findRating(wd,'//span[@class="sc-bde20123-1 iZlgcd"]')
-	infoList = findListElements(wd, '//div[@class="sc-e226b0e3-3 jJsEuz"]//ul/li' )
-	genres = findListElements(wd, '//div[@class="ipc-chip-list__scroller"]//a')
-	cast = findListElements(wd,'//div[@class="ipc-sub-grid ipc-sub-grid--page-span-2 ipc-sub-grid--wraps-at-above-l ipc-shoveler__grid"]/div/div/a')
-	d = { 'Title' : [title], 'Rating' : [rating], 'Info' : infoList, 'Genres' : genres, 'Cast' : cast, 'Plot' : plot}
-	for key,val in d.items():
-		if type(val) == list:
-			d[key] = ','.join(val)
-	return d
+	try:
+		query = input("Enter your Query: ")
+		print(f"Searching for {query} ...")	
+		wd = configureSelenium(headless=True)
+		homepage = loadHomepage(wd, url = "https://imdb.com")
+		print("Opened IMDb")
+		searchTitle(query = query, wd = wd)
+		results = searchResults('//a[@class="ipc-metadata-list-summary-item__t"]',wd)
+		results.click()
+		print(f"Results Fetched!")
+		time.sleep(1.5)
+		print("Gathering Data...")
+		plot = findPlotElement(wd = wd, xpath = '//span[@data-testid="plot-xl"]')
+		title = findTitle(wd, '//span[@class="sc-afe43def-1 fDTGTb"]')
+		rating = findRating(wd,'//span[@class="sc-bde20123-1 iZlgcd"]')
+		infoList = findListElements(wd, '//div[@class="sc-e226b0e3-3 jJsEuz"]//ul/li' )
+		genres = findListElements(wd, '//div[@class="ipc-chip-list__scroller"]//a')
+		cast = findListElements(wd,'//div[@class="ipc-sub-grid ipc-sub-grid--page-span-2 ipc-sub-grid--wraps-at-above-l ipc-shoveler__grid"]/div/div/a')
+		d = { 'Title' : [title], 'Rating' : [rating], 'Info' : infoList, 'Genres' : genres, 'Cast' : cast, 'Plot' : plot}
+		for key,val in d.items():
+			if type(val) == list:
+				d[key] = ','.join(val)
+		return d
+	except Exception as e:
+		print("Error!", e)
+		return defaultdict(lambda : '0')
 
 def displayer(data_dict):
 	print("-----"*20+ "\n")
@@ -140,21 +145,24 @@ def displayer(data_dict):
 	print("-----"*20)
 
 if __name__ == "__main__":
-	start_time = datetime.now()
-	data_dict = scrapeData()
-	end_time = datetime.now()
-	prompt = input("To Display in Terminal press 'd',\nTo save CSV file press 'f',\nTo display and save press 'df': ")	
-	if prompt.lower() == "f":
-		filename = "IMDb_Data"
-		saveData(filename,data_dict)
-	elif prompt.lower() == 'd':
-		displayer(data_dict=data_dict)
-	elif prompt.lower() == 'df':
-		filename = "IMDb_Data"
-		displayer(data_dict=data_dict)
-		saveData(filename,data_dict)
-		print('CSV File Saved')
-	print(f"Time Taken = {(end_time-start_time).total_seconds()} seconds.")
+	try:
+		start_time = datetime.now()
+		data_dict = scrapeData()
+		end_time = datetime.now()
+		prompt = input("To Display in Terminal press 'd',\nTo save CSV file press 'f',\nTo display and save press 'df': ")	
+		if prompt.lower() == "f":
+			filename = "IMDb_Data"
+			saveData(filename,data_dict)
+		elif prompt.lower() == 'd':
+			displayer(data_dict=data_dict)
+		elif prompt.lower() == 'df':
+			filename = "IMDb_Data"
+			displayer(data_dict=data_dict)
+			saveData(filename,data_dict)
+			print('CSV File Saved')
+		print(f"Time Taken = {(end_time-start_time).total_seconds()} seconds.")
+	except Exception as e:
+		print("Error!", e)
 
 
 

@@ -1,5 +1,3 @@
-Certainly! Below are example README files for each of the listed repositories in your "Tools" GitHub repository.
-
 ### Geocoding
 
 #### Description

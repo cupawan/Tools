@@ -8,7 +8,6 @@ class GoogleGeocoding:
     def __init__(self, config_path):
         self.config_path = config_path
         self.api_key = self.load_api_key()
-        self.base_url = "https://api.opencagedata.com/geocode/v1/json"
     def load_api_key(self):
         try:
             with open(self.config_path, 'r') as config_file:
@@ -26,8 +25,7 @@ class GoogleGeocoding:
             user_input = user_input.strip()
         except Exception as e:
             print("Sorry, not a valid input")
-        return user_input
-    
+        return user_input    
     def parse_response(self,response):
         print(f"Fetched {len(response)} results")
         result_df = pd.DataFrame()

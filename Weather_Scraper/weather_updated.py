@@ -53,19 +53,17 @@ class Weather():
                         sky_condition = sky_condition_element.get_attribute('textContent')
                 except Exception as e:
                         print(f"An error occurred: {e}")
-                index = [self.location.title(),'Tempreture','Precipitation','Humidity','Wind','Day and Time','Sky Condition']
+                index = [self.location.title(),"Day", "Time" ,"Tempreture", "Precipitation", "Humidity", "Wind", "Sky Condition"]
                 columns = ["Info"]
-                self.data = [city, date, temp, ppt, humidity, wind, sky_condition]
+                day,timenow = date.split(',')                
+                self.data = ["Weather", day, timenow ,temp, ppt, humidity, wind, sky_condition]
                 df = pd.DataFrame(index=index,data=self.data,columns=columns)
-                day,timenow = date.split(',')
-                self.data = [query.title(), day, timenow ,temp, ppt, humidity, wind, sky_condition]
+                self.data = [self.location.title(), day, timenow ,temp, ppt, humidity, wind, sky_condition]
                 if self.verbose:
-                        print(tabulate(df, headers='keys', tablefmt='fancy_grid'))
+                        print(tabulate(df, tablefmt='fancy_grid'))
                 time.sleep(self.sleep)
                 wd.quit()
         def process_multiple_queries(self,queries,csv_path):
-                df = pd.read_csv(csv_path)
-                available_cities = list(df['Place'])
                 for query in tqdm(queries, total=len(queries), desc= f"Checking Weather..."):
                         self.check_weather(query)
                         self.make_csv(csv_path)
@@ -75,12 +73,10 @@ class Weather():
                         csv_writer = csv.writer(f,lineterminator='\n')
                         csv_writer.writerow(self.data)
                 
-
-
 if __name__ == "__main__":
         save_csv_path = 'scraped_data.csv'
         weather_instance = Weather(location = '', sleep = 1,verbose = True)        
-        if len(sys.argv) < 3:
+        if len(sys.argv) < 2:
                 print("Usage: python3 weather_updated.py location1 [location2 location3 ...]")
                 sys.exit(1)
         if sys.argv[1] != "--multiple":
@@ -97,7 +93,7 @@ if __name__ == "__main__":
                 df.drop_duplicates(subset = ['Place'],keep='last')
                 show = input("Show Table?: ")
                 if show.lower() in ["yes", "y", "yup", "yeah"]:
-                        print(tabulate(df.tail(len_queries), headers='keys', tablefmt='fancy_grid'))
+                        print(tabulate(df.tail(len_queries), tablefmt='fancy_grid'))
                 else:
                         print(f"Table saved at {weather_instance.csv_path}")
 

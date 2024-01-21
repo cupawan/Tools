@@ -10,6 +10,7 @@ import sys
 import logging
 from tabulate import tabulate
 logger_watchtower = logging.getLogger(__name__)
+from tqdm import tqdm
 
 class ResumeParser:
     def __init__(self,skills_dict_path,root_directory = None):
@@ -163,17 +164,29 @@ class ResumeParser:
                 output = {"Name": resume, "Skills": []} 
                 all_outputs.append(output)
         return all_outputs
+    
+    def displayer(self, output):
+        output_df = pd.DataFrame(output)
+        name_df = pd.DataFrame(output_df.iloc[:1]['Name'])
+        name_df.rename(columns={'Name':'Skills'},inplace=True)
+        name_df['Skills'] = name_df['Skills'].apply(lambda x : '<' * 4 + x.upper() + '>' * 4)
+        skills_df = pd.DataFrame(output_df['Skills'])
+        skills_df = pd.concat([name_df,skills_df])
+        return skills_df
+
+
 
 if __name__ == "__main__":
-    root = "/Users/pavan/Documents/Resume/"    
+    root = "/Users/pavan/Documents/Resume/"
+    masterdf = pd.DataFrame()   
     try:
         resumeparser = ResumeParser(skills_dict_path="skills_dict.csv", root_directory= root)
         outputs = resumeparser.parse_multiple_resumes()
-        for output in outputs:
-            output_df = pd.DataFrame(output)
-            skills_df = pd.DataFrame(output_df['Skills'])
-            print(tabulate(skills_df, tablefmt="fancy_grid", headers= [output_df['Name'].values[0]]))
-            print("-"*35)
+        for output in tqdm(outputs, total = len(outputs), desc = "Parsing Resumes..."):
+            skills_df = resumeparser.displayer(output=output)
+            masterdf = pd.concat([masterdf,skills_df])
+        input("Press Any Key to display results: ")                                    
+        print(tabulate(masterdf, tablefmt="fancy_grid",showindex=False))
     except Exception as e:
         print(str(e))
     

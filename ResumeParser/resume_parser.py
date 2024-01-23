@@ -169,7 +169,7 @@ class ResumeParser:
         output_df = pd.DataFrame(output)
         name_df = pd.DataFrame(output_df.iloc[:1]['Name'])
         name_df.rename(columns={'Name':'Skills'},inplace=True)
-        name_df['Skills'] = name_df['Skills'].apply(lambda x : '<' * 4 + x.upper() + '>' * 4)
+        name_df['Skills'] = name_df['Skills'].apply(lambda x : '<' * 5 + " "+ x.upper()+ " "  + '>' * 5)
         skills_df = pd.DataFrame(output_df['Skills'])
         skills_df = pd.concat([name_df,skills_df])
         return skills_df

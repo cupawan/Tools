@@ -2,14 +2,13 @@ import requests
 import yaml
 import json
 import praw
-from email_script import EmailWithPython
+from Tools.Reddit.send_posts_email import EmailWithPython
 
 class RedditData:
     def __init__(self, config_path):
         self.config_path = config_path
         self.config = self.load_config()
-        self.USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
-
+        
     def load_config(self):
         try:
             with open(self.config_path, 'r') as f:
@@ -23,7 +22,7 @@ class RedditData:
                              client_secret=self.config['REDDIT_CLIENT_SECRET'],
                              username=self.config['REDDIT_USERNAME'],
                              password=self.config['REDDIT_PASSWORD'],
-                             user_agent=self.USER_AGENT)
+                             user_agent=self.config['REDDIT_USER_AGENT'])
         return reddit
 
     def make_request(self, sub,filter):
@@ -127,12 +126,4 @@ class RedditData:
             </html>'''
 
 
-if __name__ == "__main__":
-    sub = input("Subreddit: ")
-    filter = input("Filter by ['Hot'/'New'/'Top']: ")
-    reddit = RedditData(config_path = 'config.yaml')
-    body = reddit.make_request(sub=sub,filter = filter.lower())
-    html_content = reddit.generate_html(body)    
-    em = EmailWithPython(config_path="config.yaml",is_html=True)
-    em.send_email(rec_email='username@gmail.com',subject=f"r/{sub.title()}'s {filter.title()} Posts Today",body=html_content)
-    
+

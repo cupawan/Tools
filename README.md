@@ -1,34 +1,77 @@
 # Tools
 
-This repository contains various tools for different purposes. Below is an overview of each tool along with instructions on how to use them.
+This repository contains various tools for different purposes. Each tool is organized into separate directories with its own functionality. Please follow the instructions for each tool to set up and use it effectively.
 
-## Geocoding
+## Configuration
 
-### Description
-This tool provides geocoding functionality using the OpenCage and Google Geocoding API. It takes a location as input and returns its latitude, longitude, and formatted address.
+All configurations for the tools are managed in the `Configurations/tools_config.yaml` file. Before using any tool, make sure to fill in the required configurations in this file.
 
-### How to Use
-1. **Get an API key:**
-   - Get an API key from [OpenCage](https://opencagedata.com/) or [Google](https://developers.google.com/maps/documentation/geocoding/get-api-key).
+## Tools
 
-2. **Configure API keys:**
-   - Open the `Geocoding/OpenCage/geocoding.py` file and replace `'YOUR_API_KEY'` with your actual OpenCage API key.
-   - Open the `Geocoding/Google/geocoding.py` file and replace `'YOUR_API_KEY'` with your actual Google API key.
+### 1. Dainik Bhaskar News Scraper
 
-3. **Run the script:**
-   - Choose the appropriate geocoding provider by running the script from either the OpenCage or Google subfolder.
-   - Provide the location you want to geocode.
+- **Directory:** `Dainik_Bhaskar_News`
+- **Description:** Scrapes Bhaskar news based on the user-given category (e.g., sports, national, career).
+
+### 2. Geocoding
+
+#### 2.1 Google Geocoding
+
+- **Directory:** `Geocoding/Google_Geocoding`
+- **Description:** Provides geocoding functionality using the Google Geocoding API.
+
+#### 2.2 OpenWeatherMap Geocoding
+
+- **Directory:** `Geocoding/OpenWeatherMap_Geocoding`
+- **Description:** Provides geocoding functionality using the OpenWeatherMap API.
+
+### 3. Google Translate API
+
+- **Directory:** `Google_Translate_API`
+- **Description:** Utilizes the Google Translate API for language translation.
+
+### 4. News On Air
+
+- **Directory:** `News_On_Air`
+- **Description:** Downloads daily news audio clips from [News On Air](https://newsonair.gov.in/).
+
+### 5. OpenWeatherMap
+
+- **Directory:** `OpenWeatherMap`
+- **Description:** Fetches the latest accurate weather information using the OpenWeatherMap API.
+
+### 6. Reddit
+
+- **Directory:** `Reddit`
+- **Description:** Retrieves Reddit posts based on the Subreddit Name, filter (Hot, Top, New), and the Number of posts.
+
+### 7. Resume Parser
+
+- **Directory:** `Resume_Parser`
+- **Description:** Parses skills information from resumes.
+
+### 8. Speech to Text Conversion
+
+- **Directory:** `Speech_to_text_conversion`
+- **Description:** Converts speech to text.
+
+### 9. Weather API
+
+- **Directory:** `Weather_API`
+- **Description:** Provides weather information using a custom API.
+
+### 10. Weather Scraper
+
+- **Directory:** `Weather_Scraper`
+- **Description:** Utilizes Selenium to scrape weather information.
+
+### 11. YouTube Playlist Length Calculator
+
+- **Directory:** `Youtube_Playlist_Length_Calculator`
+- **Description:** Calculates the length of a YouTube playlist given its URL.
 
 
-## Resume_Parser
 
-### Description
-Resume_Parser is a tool for parsing information from resumes/CVs. It's designed to extract key details from resumes for further analysis.
+---
 
-### How to Use
-1. Open the `Resume_Parser/resume_parser.py` file.
-2. Run the script and provide the path to the resume file you want to parse.
-3. Extracted information will be displayed or saved as needed.
-
-
-
+**Note:** Make sure to follow the specific instructions provided in each tool's directory for setup and usage.

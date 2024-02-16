@@ -11,7 +11,9 @@ class TelegramMessage:
         self.document_url = f"https://api.telegram.org/bot{self.token}/sendDocument"
         self.image_url = f"https://api.telegram.org/bot{self.token}/sendPhoto"
         self.plain_url = f"https://api.telegram.org/bot{self.token}/sendMessage"
-    
+        self.get_updates_url = f"https://api.telegram.org/bot{self.token}/getUpdates"
+        self.get_me = f"https://api.telegram.org/bot{self.token}/getMe"
+
     def load_config(self):
         try:
             with open(self.config_file_path, 'r') as f:
@@ -24,7 +26,7 @@ class TelegramMessage:
     def send_message(self, message_type, data, chat_id, caption = None):
         if message_type.lower() == 'plain':
             url = self.plain_url
-            data_payload = {'chat_id': chat_id, 'text': data}
+            data_payload = {'chat_id': chat_id, 'text': data, 'parse_mode' : 'HTML'}
             files_payload = None
         elif message_type.lower() == 'audio':
             url = self.audio_url
@@ -48,6 +50,17 @@ class TelegramMessage:
         except requests.exceptions.RequestException as e:
             print(f"Error sending message: {e}")
 
+    def get_updates(self, timeout = None, limit = None, offset = None, allowed_updates = None):
+        params = {'timeout': timeout, 'limit': limit, 'offset' : offset, 'allowed_updates': allowed_updates}
+        try:
+            response = requests.get(url = self.get_updates_url, params=params)
+            response.raise_for_status()
+            print(f"Updates fetched successfully. Response: {response.json()['result']}")
+        except requests.exceptions.RequestException as e:
+            print(f"Error fetching updates: {e}")
+
+
+
 if __name__ == "__main__":
     ins = TelegramMessage(config_file_path="tools_config.yaml")
-    ins.send_message(message_type='audio', data = 'file.mp3', chat_id = '<chat_id>', caption = "<caption>")
+    ins.send_message(message_type='plain', data = "", chat_id = "")

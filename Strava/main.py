@@ -31,22 +31,22 @@ class StravaStats:
         access_token = res.json()['access_token']
         return access_token
 
-    def access_activity_data(self,latest= True):
+    def access_activity_data(self, n_activities:int= None, latest= True):
         headers:dict = {'Authorization': f'Authorization: Bearer {self.access_token}'}
         response:dict = requests.get(self.config['STRAVA_ACTIVITIES_URL'], headers=headers)
         response.raise_for_status()
         activity_data = response.json()
         if latest:
-            activity_data = [activity_data[0]]
-        return activity_data
+            activity_data = activity_data[0:n_activities]
+        return activity_data, n_activities
     
-    def msg_formatter(self,activity_data):
+    def msg_formatter(self,activity_data, n_activitie = None):
         msg = ''''''
         for i in activity_data[::-1]:
             dt = datetime.fromisoformat(i['start_date'].replace('Z', '+00:00'))
             ist = pytz.timezone('Asia/Kolkata')
             ist_dt = dt.astimezone(ist)
-            if ist_dt != datetime.now().astimezone(ist):
+            if ist_dt != datetime.now().astimezone(ist) and not n_activities:
                 return "No activity today"
             formatted_datetime = ist_dt.strftime('%d %b %Y, %I:%M %p')
             msg += f"Date and Time: {formatted_datetime}\n"
@@ -69,8 +69,8 @@ if __name__ == "__main__":
     warnings.filterwarnings('ignore')
     config_path = "Tools/Configuration/tools_config.yaml"
     strava_instance = StravaStats(config_file_path=config_path)
-    activity_data = strava_instance.access_activity_data()
-    message = strava_instance.msg_formatter(activity_data=activity_data)
+    activity_data, n_activities = strava_instance.access_activity_data()
+    message = strava_instance.msg_formatter(activity_data=activity_data, n_activitie=n_activities)
     print(message)
 
     

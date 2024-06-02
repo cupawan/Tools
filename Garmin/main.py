@@ -6,7 +6,6 @@ from garminconnect import (
     GarminConnectTooManyRequestsError,
     GarminConnectAuthenticationError,
 )
-from telegram_message import TelegramMessage
 
 
 class GarminSleepData:
@@ -106,5 +105,4 @@ if __name__ == "__main__":
     my_garmin = GarminSleepData(config_file_path= "Tools/Configuration/tools_config.yaml") 
     sleep_data = my_garmin.get_sleep_data()
     msgbody = my_garmin.message_formatter(sleep_data=sleep_data)
-    tg = TelegramMessage(config_file_path= "Tools/Configuration/tools_config.yaml")
-    tg.send_message(message_type = "photo", caption = msgbody, chat_id= tg.config["TELEGRAM_CHAT_IDS"]["PERSON1"], data = "Images/SleepStats.png")
+    print(msgbody)
